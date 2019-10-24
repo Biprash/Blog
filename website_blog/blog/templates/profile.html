@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block bodyblock %}
+{% load static %}
+
+<div class="row mt-2">
+    <div class="col-4 border-right">
+        {% comment %} <img src="{% static 'profile_picture/default.jpg' %}" alt=""> {% endcomment %}
+        <img src="{{ user.image.url }}" alt="">
+        <h1>Welcome {{ user.username }}</h1>
+        <br><hr>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input class="btn btn-primary" type="submit" value="Update">
+        </form>
+    </div>
+    <div class="col-8">
+        <h2>Notifications</h2>
+
+        {% for comment in comments %}
+            {% if comment.post.author_id == request.user.id %}
+                <div class="card">
+                    <div class="row">
+                        <div class="col-10">
+                            <div class="card-body">
+                                <h4 class="card-title"><b><a href="{% url 'blog:post_detail' comment.post.pid %}">{{ comment.post.title }}</a></b></h4>
+                                <div class="card-title">{{ comment.comment_text }}</div>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                        <br>
+                            <a class="card-title btn btn-success" href="{% url 'blog:approve_comment' comment.cid %}"><span class="fas fa-check"></span></a>
+                            <a class="card-title btn btn-danger" href="{% url 'blog:delete_comment' comment.cid %}"><span class="fas fa-times"></span></a>
+                        </div>
+                    </div>
+                </div>
+                <br>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock bodyblock %}

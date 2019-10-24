@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block bodyblock %}
+    {% for post in posts %}
+        {% comment %} <h2>{{ post.title }}</h2>
+        <p>{{ post.content }}</p> {% endcomment %}
+
+        <article class="media content-section">
+            <img class="rounded-circle article-img" src="{{ post.author.image.url }}" style="width:60px;">
+            <div class="media-body">
+            <div class="article-metadata">
+                <a class="mr-2" href="{% url 'blog:user_detail' pk=post.author_id %}">{{ post.author.username }}</a>
+                <small class="text-muted">{{ post.published_date }}</small>
+            </div>
+            <h2>{{ post.title }}</h2>
+            <p class="article-content">{{ post.content }}</p>
+            </div>
+        </article>        
+        
+        {% if user.id == post.author_id %}
+            <a class="btn btn-warning" style="color:white;" href="{% url 'blog:edit_post' post.pid %}">Edit</a>
+            {% if post.published_date is None %}
+                <a class="btn btn-primary" href="{% url 'blog:draft_publish' post.pid %}">Publish</a>
+            {% endif %}
+            <a class="btn btn-danger" href="{% url 'blog:delete_post' post.pid %}">Delete</a>
+        {% endif %}
+        <hr>
+        <div class="media p-3">
+            <div class="media-body">
+                {% if post.published_date %}
+                    {% if comments %}
+                        <h4>Comments:</h4>
+                        
+                        {% for comment in comments %}
+
+                            <article class="media content-section ml-4 p-1">
+                                <img class="rounded-circle article-img" src="{{ comment.author.image.url }}" style="height:40px;width:40px;">
+                                <div class="media-body">
+                                <div class="article-metadata">
+                                    <a class="mr-2" href="{% url 'blog:user_detail' pk=comment.author_id %}">{{ comment.author.username }}</a>
+                                    <small class="text-muted">{{ comment.approved_comment }}</small>
+                                </div>
+                                <p class="article-content mb-1 ml-2">{{ comment.comment_text }}</p>
+                                </div>
+                            </article> 
+                            
+                        {% endfor %}
+
+                    {% endif %}
+                    {% if user.is_authenticated %}
+                        <form method="POST">
+                            {% csrf_token %}
+                            {{ form|crispy }}
+                            <input type="submit" class="btn btn-info" name="comment_add" Value="Add">
+                        </form>
+                    {% endif %}
+                
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    
+    {% endfor %}
+{% endblock bodyblock %}

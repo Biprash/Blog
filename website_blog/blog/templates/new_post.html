@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block bodyblock %}
+    <form method='POST'>
+        {% csrf_token %}
+
+        {{ form|crispy }}
+        {% comment %} change the value of post and draft when newpost or edit post {% endcomment %}
+        {% if title == 'Edit Post' %}
+        <input type="submit" name="add_post" class="btn btn-primary" value="Update">
+        {% comment %} <input type="submit" name="draft" class="btn btn-warning" value="Delete"> {% endcomment %}
+        {% else %}
+        <input type="submit" name="add_post" class="btn btn-primary" value="Post">
+        <input type="submit" name="draft" class="btn btn-warning" style="color:white;" value="Draft">
+        {% endif %}
+    </form>
+{% endblock bodyblock %}

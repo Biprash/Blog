@@ -1,0 +1,4 @@
+1. Make all Views a class based view
+2. comment ko query wrong cha jasle post garyo tesle accept garnu parne - Solved
+3. "All posts of user" lai design garne - Solved
+4. search ko pagination chaldaina
